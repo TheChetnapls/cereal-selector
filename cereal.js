@@ -20,7 +20,9 @@ rl.question('How many calories do you want to consume? ', cal => {
                     yourCereals.push(cereals[i])
                 }
             }
-            yourCereals.map(cereal => console.log(cereal.name))
+            yourCereals.map(cereal => {
+                console.log(cereal.name + '- Calories: ' + cereal.calories + ' Rating: ' + cereal.rating + ' out of 100')
+            })
         })
     rl.close()
 })
