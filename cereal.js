@@ -1,31 +1,40 @@
-console.log('whats up dawg')
-
 const csv = require('csv-parser')
 const fs = require('fs')
+const prompt = require('prompt')
+const process = require('process')
 let cereals = []
 
-const rl = require('readline').createInterface({
-    input: process.stdin,
-    output: process.stdout
-})
-rl.question('How many calories do you want to consume? ', cal => {
-    console.log('Try these cereals: ')
+prompt.start()
+
+prompt.get('calories', function (err, calories) {
+    if (err) { return onErr(err); }
+
     fs.createReadStream('cereal.csv')
         .pipe(csv({}))
         .on('data', (data) => cereals.push(data))
         .on('end', () => {
             let yourCereals = []
             for (let i = 0; i < cereals.length; i++) {
-                if (cereals[i].calories <= cal) {
+                if (cereals[i].calories <= calories) {
                     yourCereals.push(cereals[i])
                 }
             }
-            yourCereals.map(cereal => {
-                console.log(cereal.name + '- Calories: ' + cereal.calories + ' Rating: ' + cereal.rating + ' out of 100')
-            })
+            let bestCereal = { rating: 0 }
+            for (let k = 0; k < yourCereals.length; k++) {
+                if (yourCereals[k].rating > bestCereal.rating) {
+                    bestCereal = yourCereals[k]
+                }
+            }
+            console.log(bestCereal.name + '- Calories: ' + bestCereal.calories + ' Rating: ' + bestCereal.rating + ' out of 100')
         })
-    rl.close()
+
 })
+
+function onErr(err) {
+    console.log(err);
+    return 1;
+}
+
 
 
 
